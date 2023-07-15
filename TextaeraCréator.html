@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Textaera créator</title>
+</head>
+<body>
+
+<div class="nePasRetirerInputPerso" style="background-color: yellow;">
+  Fonction à garder dans cette page pour créer les textarea personalisées - Perroquet
+</div>
+<script>
+  let inEditor = (window.location.pathname.split("/")[1] === "editor");
+
+  if (!inEditor)
+  {
+    document.querySelector(".nePasRetirerInputPerso").style.display="none";
+
+    var tab =[];
+    var demo = document.querySelector(".demoInput"); tab.push(demo);
+    demo.value="phrase de test";
+
+
+    var type = document.querySelector(".type"); tab.push(type);
+    var hauteur = document.querySelector(".hauteur"); tab.push(hauteur);
+    var largeur = document.querySelector(".largeur"); tab.push(largeur);
+    var tailleBordure = document.querySelector(".largeurBordure"); tab.push(tailleBordure);
+    var rangeTransparence = document.querySelector(".transparence"); tab.push(rangeTransparence);
+    var couleurBordure = document.querySelector(".couleurBordure"); tab.push(couleurBordure);
+    var couleurFond = document.querySelector(".couleurFond"); tab.push(couleurFond);
+    var couleurPolice = document.querySelector(".couleurPolice"); tab.push(couleurPolice);
+    var taillePolice = document.querySelector(".taillePolice"); tab.push(taillePolice);
+    var styleBordure = document.querySelector(".styleBordure"); tab.push(styleBordure);
+    var nomPolice = document.querySelector(".nomDePolice"); tab.push(nomPolice);
+    var stylePara = document.querySelector(".stylePara"); tab.push(stylePara);
+    var casse = document.querySelector(".placeholder"); tab.push(casse);
+    var borderRadius = document.querySelector(".borderRadius"); tab.push(borderRadius);
+    var verticalAlign = document.querySelector(".verticalAlign"); tab.push(verticalAlign);
+
+    var laZoneDeTexte = document.querySelector(".laZoneDeTexte");
+
+
+    function trouveRGBA()
+    {
+      let red=parseInt(couleurFond.value.slice(1,3),16);
+      let green=parseInt(couleurFond.value.slice(3,5),16);
+      let blue=parseInt(couleurFond.value.slice(5,7),16);
+
+      demo.style.backgroundColor="rgba("+red+","+green+","+ blue+ ","+ rangeTransparence.value;
+    }
+
+    function actualise()
+    {
+      trouveRGBA();
+
+      demo.style.color=couleurPolice.value;
+      demo.style.fontSize=taillePolice.value+"px";
+      demo.style.fontFamily = nomPolice.value;
+      demo.style.textAlign = stylePara.value;
+
+      demo.style.borderStyle=styleBordure.value;
+      demo.style.borderWidth = tailleBordure.value+"px";
+      demo.style.borderColor = couleurBordure.value;
+      demo.style.borderRadius = borderRadius.value+"px";
+      demo.style.padding = verticalAlign.value +"px 0px 0px 0px";
+
+      demo.setAttribute('cols',largeur.value);
+      demo.setAttribute('rows',hauteur.value);
+      demo.setAttribute('placeholder',casse.value);
+
+
+      let demoTxt = demo.outerHTML.toString().replace('demoInput', type.value);
+      if(type.value === 'chatbot'){
+        demoTxt = demoTxt.replace('</textarea>', demo.value +'</textarea>');
+        console.log('chatbot ou utilisateur: ',demoTxt);
+      }
+      if(type.value === 'detecte'){
+        demoTxt = demoTxt.replace('</textarea>', demo.value +'</textarea>');
+        console.log('detecte: ',demoTxt);
+      }
+
+      laZoneDeTexte.innerHTML=demoTxt+'<s'+'cript></s'+'cript>';
+    }
+
+    for (const noeud of tab) {
+      noeud.addEventListener('input', () => {
+        actualise();
+      });
+    }
+
+  }
+</script>
+
+
+
+<textarea class="demoInput" rows="5" cols="33" style="background-color: white"></textarea>
+<script></script>
+
+<input type="range" class="largeur" min="0" max="110" value="40">
+<script></script>
+
+<input type="range" class="hauteur" min="0" max="30" value="10">
+<script></script>
+
+<input type="text" class="placeholder" style="width:130px;border:thin solid black">
+<script></script>
+
+<input type="text" class="nomDePolice" style="width:130px;border:thin solid black">
+<script></script>
+
+<input type="range" class="borderRadius" min ="0" max="400" value="0" style="width:130px;border:thin solid black">
+<script></script>
+
+<input type="range" class="verticalAlign" min = "0" max="100" value="0" style="width:130px;border:thin solid black">
+<script></script>
+
+<select class="stylePara">
+    <option>left</option>
+    <option>right</option>
+    <option>center</option>
+</select>
+<script></script>
+
+<select class="type">
+    <option selected>simple</option>
+    <option>chatbot</option>
+    <option>utilisateur</option>
+    <option>detecte</option>
+    <option>chatLog</option>
+</select>
+<script></script>
+
+
+
+<button class='copie' style="height: 45px;
+  width: 155px;
+  color: #fff;
+  background: #613bdb;
+  border: none;
+  border-radius: 5px;
+  font-weight: 400;
+  margin-top: 8px;
+  cursor: pointer;">Copier le code</button>
+<script>
+    var copyButton = document.querySelector('button.copie');
+    copyButton.addEventListener('click', function(event) {
+      //console.log('clic');
+        var demoInput = document.querySelector('.laZoneDeTexte');
+        /*if(sessionStorage.getItem('copie') == null)
+        {
+          sessionStorage.setItem('copie', demoInput.value);
+        }
+        else
+        {
+          sessionStorage.removeItem('copie');
+          sessionStorage.setItem('copie',demoInput.value)
+        }*/
+        demoInput.select();
+        try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'a réussi!' : 'a échoué!';
+        copyButton.innerHTML = 'Copié!';
+        console.log('La copie de la zone de texte ' + msg);
+        } catch (err) {
+        console.log('Oups, La copie a échoué!');
+        }
+    });
+</script>
+
+
+<button class="coller" style="height: 45px;
+        width: 155px;
+        color: #fff;
+        background:cornflowerblue;
+        border: none;
+        border-radius: 5px;
+        font-weight: 400;
+        margin-top: 8px;
+        cursor: pointer;">Coller en mode preview</button>
+<script>
+  // bouton insérer :
+  // button.Wrapper-sc-1bgb0n5.hBMkXy
+  let inEditor = (window.location.pathname.split("/")[1] === "editor");
+  function paste() {
+    let pasteText = document.querySelector('#root textarea[data-cy="insertOthersTextArea"]');
+    console.log(pasteText);
+    pasteText.focus();
+    document.execCommand("paste");
+    console.log(pasteText.textContent);
+  }
+
+
+      document.querySelector('.coller').addEventListener('click', paste
+        /*function(event) {
+        let texteAColler= sessionStorage.getItem('copie');
+        console.log('texte à coller',texteAColler);
+        console.log(document.querySelector('textarea[data-cy="insertOthersTextArea"]'));
+        document.querySelector('textarea[data-cy="insertOthersTextArea"]').value = texteAColler;
+        document.querySelector('button[data-cy="insertOthersButton"]').click();
+      }*/
+      );
+      /*if(inEditor){
+        document.querySelector('.coller').click();
+      }*/
+
+</script>
+
+
+<div id= test>Test insertion html</div><script>
+  let html = `<input type="text" class="placeholder" style="left: 84.1537px; top: 55.5264px; position: absolute; z-index: 1;">`;
+  let test = document.querySelector('#test');
+  test.innerHTML = html;
+  test.closest('[data-cy="richContentItem"]').classList.replace('rich-content-item', 'rich-content-item2')
+</script>
+
+
+
+</body>
+</html>
